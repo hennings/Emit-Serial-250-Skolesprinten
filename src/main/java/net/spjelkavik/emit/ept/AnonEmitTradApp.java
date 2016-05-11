@@ -111,7 +111,7 @@ public class AnonEmitTradApp extends JFrame implements ActionListener, BadgeList
 
 	}
 
-    final String path = "c:/usr/arr/2014/skolesprint/scanlog";
+    final String path = "c:/usr/arr/2016/skolesprint/scanlog";
 	File logfile = new File(path + "/log1.txt");
 	File logfile2 = new File(path + "/log2.txt");
 	File logfile3 = new File(path + "/log-stnr-for-spool.log");
@@ -121,7 +121,6 @@ public class AnonEmitTradApp extends JFrame implements ActionListener, BadgeList
 	private JLabel statusLabel;
 
 	private JLabel prevLabel;
-	
 	private void updateDatabase() {
 		System.err.println("update database");
 		if (frame==null) {
