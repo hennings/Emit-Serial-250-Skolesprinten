@@ -1,48 +1,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.spjelkavik</groupId>
-  <artifactId>anonrunners-parent</artifactId>
-  <packaging>pom</packaging>
-  <version>1.0</version>
-  <name>Serial250 Parent Project</name>
+    <groupId>net.spjelkavik</groupId>
+    <artifactId>serial-250-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>Serial250</name>
 
-  <modules>
-    <module>emitag</module>
-    <module>ept</module>
-  </modules>
+    <modules>
+        <module>emitag</module>
+        <module>ept</module>
+    </modules>
 
-      <repositories>
-    <repository>
-        <id>springsource-repo</id>
-        <name>SpringSource Repository</name>
-        <url>http://repo.springsource.org/release</url>
-    </repository>
+    <repositories>
+        <repository>
+            <id>springsource-repo</id>
+            <name>SpringSource Repository</name>
+            <url>http://repo.springsource.org/release</url>
+        </repository>
     </repositories>
 
-  
-  <build>
-    <pluginManagement>
-      <plugins>
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-compiler-plugin</artifactId>
-	  <configuration>
-	    <source>1.7</source>
-	    <target>1.7</target>
-	  </configuration>
-	</plugin>
-      </plugins>
-    </pluginManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
 
-    
-  </build>
 
-      <dependencies>
+    </build>
+
+    <dependencies>
 
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -114,5 +114,5 @@
 
     </dependencies>
 
-  
+
 </project>

@@ -16,3 +16,10 @@ Kopier javax.comm.properties til %JAVA_HOME%/lib !
 Data source: (odbc 32 or odbc 64)
 jdbc:odbc:etime-java
 
+
+
+
+Next generation:
+Test: jSerialComm or jrxtx
+Test: ucanaccess
+
