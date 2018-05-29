@@ -12,6 +12,7 @@ For å kjøre for vanlige brikker:
 java net.spjelkavik.emit.ept.AnonEmitTradApp COM12
 
 Kopier javax.comm.properties til %JAVA_HOME%/lib !
+...og jre/lib
 
 Data source: (odbc 32 or odbc 64)
 jdbc:odbc:etime-java

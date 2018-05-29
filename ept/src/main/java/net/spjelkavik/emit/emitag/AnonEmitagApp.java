@@ -292,6 +292,8 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         File logfile = new File(emitagConfig.getDbDir() + "/log-brikkenr-"+hostname+".txt");
         File logfile2 = new File("log-brikkenr-2-"+hostname+".txt");
 
+        log.info("Logfiles: " + logfile +", " + logfile2);
+
         this.seriousLogger = new SeriousLogger(logfile, logfile2);
 
 

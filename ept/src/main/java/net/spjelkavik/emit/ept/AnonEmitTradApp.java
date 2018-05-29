@@ -1,9 +1,14 @@
 package net.spjelkavik.emit.ept;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import javax.swing.*;
+import javax.swing.plaf.ActionMapUIResource;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,31 +16,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
-
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.BoxLayout;
-import javax.swing.ComponentInputMap;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.ActionMapUIResource;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 /*
@@ -111,7 +91,7 @@ public class AnonEmitTradApp extends JFrame implements ActionListener, BadgeList
 
 	}
 
-    final String path = "c:/usr/arr/2016/skolesprint/scanlog";
+    final String path = "c:/usr/arr/2018/skolesprint/scanlog";
 	File logfile = new File(path + "/log1.txt");
 	File logfile2 = new File(path + "/log2.txt");
 	File logfile3 = new File(path + "/log-stnr-for-spool.log");
@@ -285,6 +265,7 @@ public class AnonEmitTradApp extends JFrame implements ActionListener, BadgeList
 		SwingUtilities.replaceUIActionMap(saveDataButton, actionMap);
 		SwingUtilities.replaceUIInputMap(saveDataButton, JComponent.WHEN_IN_FOCUSED_WINDOW, keyMap);
 
+		log.info("Logfiles: " + logfile+", " + logfile2+", " + logfile3);
 
 		//display the window                  
 		this.pack();                                                  
