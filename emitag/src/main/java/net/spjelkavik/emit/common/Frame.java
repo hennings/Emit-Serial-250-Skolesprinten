@@ -1,4 +1,4 @@
-package net.spjelkavik.emit.ept;
+package net.spjelkavik.emit.common;
 
 import java.text.SimpleDateFormat;
 

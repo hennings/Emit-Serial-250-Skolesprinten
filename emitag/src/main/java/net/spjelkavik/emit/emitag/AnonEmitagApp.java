@@ -1,11 +1,10 @@
 package net.spjelkavik.emit.emitag;
 
 import net.miginfocom.swing.MigLayout;
-import net.spjelkavik.emit.ept.EtimingReader;
-import net.spjelkavik.emit.ept.Frame;
-import net.spjelkavik.emit.ept.SeriousLogger;
+import net.spjelkavik.emit.common.EtimingReader;
+import net.spjelkavik.emit.common.Frame;
+import net.spjelkavik.emit.common.SeriousLogger;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,8 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
   Procedure:
     scan number bib - name and team is shown
     read emitag - emitag number is shown prominently
-    press f3 to save
+    press f4 to save
     the stored combo is moved to the "previous" part
     the system is ready for the next runner
 
@@ -70,7 +67,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         if (args.length > 0) {
             String com = args[0];
             System.out.println("Using port " + com);
-            config = new EmitagConfig(null,null,com,"ecard1", "jdbc:odbc:etime-java");
+            config = new EmitagConfig("static event", null,null,com,"ecard1", "jdbc:odbc:etime-java", ConfigFrameMiG.sunJdbcDriver, true);
         } else {
             config = new AskForConfig().askForConfig(EmitagReader.findSerialPorts());
         }
@@ -248,10 +245,18 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         if (runner!=null) {
 //            runnerNameLabel.setText("<html><h1>"+runner.get("startno")+" " + runner.get("name")+" " + runner.get("ename")+"</h1>");
             String stnr = runner.get("startno");
-            int startno = NumberUtils.toInt(stnr,0)/100;
-            int leg = NumberUtils.toInt(stnr,0)%100;
-            runnerNameLabel.setText(startno+"-" + leg +" " + runner.get("name")+" " + runner.get("ename"));
-            clubNameLabel.setText(runner.get("team_name")+"; Leg " + runner.get("seed"));
+
+
+            if  (emitagConfig.isRelay()) {
+                int startno = NumberUtils.toInt(stnr,0)/100;
+                int leg = NumberUtils.toInt(stnr,0)%100;
+                runnerNameLabel.setText(startno+"-" + leg +" " + runner.get("name")+" " + runner.get("ename"));
+                clubNameLabel.setText(runner.get("team_name")+"; Leg " + runner.get("seed"));
+            } else {
+                int startno = NumberUtils.toInt(stnr,0);
+                runnerNameLabel.setText(startno+" " + runner.get("name")+" " + runner.get("ename"));
+                clubNameLabel.setText(runner.get("team_name"));
+            }
             if (EcardField.ECARD2.equals(ecardField)) {
                 brikkeNrLabelInDb.setText("In db: ecard " + runner.get("ecard") +
                         " / ecard2 " + runner.get("ecard2"));
@@ -292,14 +297,19 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         File logfile = new File(emitagConfig.getDbDir() + "/log-brikkenr-"+hostname+".txt");
         File logfile2 = new File("log-brikkenr-2-"+hostname+".txt");
 
-        this.seriousLogger = new SeriousLogger(logfile, logfile2);
+        this.seriousLogger = new SeriousLogger(hostname+";"+config.getTitle(), logfile, logfile2, "http://project.spjelkavik.net/logger/");
 
 
         JPanel all = new JPanel(new MigLayout());
         this.add(all);
         all.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        JLabel title = new JLabel(config.getTitle());
+
         Font jfbig = new Font("Sans serif", Font.PLAIN, 20);
+
+        title.setFont(jfbig);
+        all.add(title, "grow,span, wrap");
 
 
         runnerNameLabel = new JLabel();
@@ -312,7 +322,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         clubNameLabel.setPreferredSize(new Dimension(650,40));
 
         //add the button
-        saveDataButton = new JButton("Oppdater - F3");
+        saveDataButton = new JButton("Oppdater - F4");
         saveDataButton.setSize(new Dimension(120,60));
         saveDataButton.setBackground(Color.GREEN);
         saveDataButton.addActionListener(this);
@@ -400,7 +410,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
 
 
         InputMap keyMap = new ComponentInputMap(saveDataButton);
-        keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "action");
+        keyMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "action");
 
         ActionMap actionMap = new ActionMapUIResource();
         actionMap.put("action", new UpdateAction("updater"));

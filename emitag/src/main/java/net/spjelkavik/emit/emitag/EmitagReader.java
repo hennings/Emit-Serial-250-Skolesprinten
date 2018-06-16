@@ -1,7 +1,6 @@
 package net.spjelkavik.emit.emitag;
 
 import com.google.common.io.Files;
-import net.spjelkavik.emit.ept.BadgeListener;
 import org.apache.log4j.Logger;
 
 import javax.comm.*;

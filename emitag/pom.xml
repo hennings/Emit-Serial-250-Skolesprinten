@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>net.spjelkavik</groupId>
-      <artifactId>anonrunners-parent</artifactId>
-      <version>1.0</version>
+        <groupId>net.spjelkavik</groupId>
+        <artifactId>serial-250-parent</artifactId>
+        <version>1.0</version>
     </parent>
-    
+
     <artifactId>serial-250-emitag</artifactId>
     <groupId>net.spjelkavik.emit</groupId>
     <packaging>jar</packaging>
@@ -20,74 +20,74 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
 
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-shade-plugin</artifactId>
-    <version>1.4</version>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>shade</goal>
-            </goals>
-        </execution>
-    </executions>
-    <configuration>
-      <shadedArtifactAttached>true</shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
-      <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
-    </configuration>
-</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
+                    <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
+                </configuration>
+            </plugin>
 
-<plugin>
-  <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
-  <artifactId>launch4j-plugin</artifactId>
-  <version>1.5.0.0</version>
-  <executions>
+            <plugin>
+                <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+                <artifactId>launch4j-plugin</artifactId>
+                <version>1.5.0.0</version>
+                <executions>
 
-    <!-- GUI exe -->
-    <execution>
-      <id>l4j-emitag</id>
-      <phase>package</phase>
-      <goals>
-        <goal>launch4j</goal>
-      </goals>
-      <configuration>
-        <headerType>gui</headerType>
-        <outfile>target/emitag-app.exe</outfile>
-        <jar>target/${project.artifactId}-${project.version}-shaded.jar</jar>
-        <errTitle>App Err</errTitle>
-        <classPath>
-          <mainClass>net.spjelkavik.emit.emitag.AnonEmitagApp</mainClass>
-        </classPath>
-        <icon>src/main/resources/emit.ico</icon>
-        <jre>
-          <minVersion>1.6.0</minVersion>
-          <maxVersion>1.7.9</maxVersion>
-          <initialHeapSize>128</initialHeapSize>
-          <maxHeapSize>1024</maxHeapSize>
-        </jre>
-        <versionInfo>
-          <fileVersion>1.0.0.0</fileVersion>
-          <txtFileVersion>1.0.0.0</txtFileVersion>
-          <fileDescription>Desc</fileDescription>
-          <copyright>C</copyright>
-          <productVersion>1.0.0.0</productVersion>
-          <txtProductVersion>1.0.0.0</txtProductVersion>
-          <productName>Product</productName>
-          <internalName>Product</internalName>
-          <originalFilename>App.exe</originalFilename>
-        </versionInfo>
-      </configuration>
-    </execution>
+                    <!-- GUI exe -->
+                    <execution>
+                        <id>l4j-emitag</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>target/emitag-app.exe</outfile>
+                            <jar>target/${project.artifactId}-${project.version}-shaded.jar</jar>
+                            <errTitle>App Err</errTitle>
+                            <classPath>
+                                <mainClass>net.spjelkavik.emit.emitag.AnonEmitagApp</mainClass>
+                            </classPath>
+                            <icon>src/main/resources/emit.ico</icon>
+                            <jre>
+                                <minVersion>1.6.0</minVersion>
+                                <maxVersion>1.7.9</maxVersion>
+                                <initialHeapSize>128</initialHeapSize>
+                                <maxHeapSize>1024</maxHeapSize>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0.0</txtFileVersion>
+                                <fileDescription>Desc</fileDescription>
+                                <copyright>C</copyright>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0.0</txtProductVersion>
+                                <productName>Product</productName>
+                                <internalName>Product</internalName>
+                                <originalFilename>App.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
 
 
-  </executions>
-</plugin>
+                </executions>
+            </plugin>
 
 
 
@@ -95,4 +95,20 @@
         </plugins>
     </build>
 
-  </project>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.microsoft</groupId>
+            <artifactId>sqlserver</artifactId>
+            <version>3.0.1301</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.10.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

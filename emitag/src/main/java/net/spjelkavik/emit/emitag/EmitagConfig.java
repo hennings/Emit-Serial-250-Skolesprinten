@@ -8,16 +8,27 @@ public class EmitagConfig {
     private final String ecardField;
     private final String comPort;
     private final String jdbcUrl;
+    private final String jdbcDriver;
+    private final String title;
+    private final boolean isRelay;
 
     private final Logger LOG = Logger.getLogger(EmitagConfig.class);
     private String dbDir;
 
-    public EmitagConfig(String db, String system, String comPort, String ecardField, String jdbcUrl) {
+    public EmitagConfig(String globalTitle, String db, String system, String comPort, String ecardField,
+                        String jdbcUrl, String jdbcDriver, boolean isRelay) {
         this.db = db;
         this.system = system;
         this.comPort = comPort;
         this.ecardField = ecardField;
         this.jdbcUrl = jdbcUrl;
+        this.jdbcDriver = jdbcDriver;
+        this.title = globalTitle;
+        this.isRelay = isRelay;
+    }
+
+    public boolean isRelay() {
+        return isRelay;
     }
 
     public String getDb() {
@@ -38,12 +49,20 @@ public class EmitagConfig {
         return EcardField.ECARD1;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public String getComPort() {
         return comPort;
     }
 
     public String getJdbcUrl() {
         return jdbcUrl;
+    }
+
+    public String getJdbcDriver() {
+        return jdbcDriver;
     }
 
     @Override
