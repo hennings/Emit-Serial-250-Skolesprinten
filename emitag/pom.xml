@@ -16,6 +16,29 @@
 
     <build>
         <plugins>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.5.2</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
@@ -28,7 +51,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.4</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -42,14 +65,13 @@
                     <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
                 </configuration>
             </plugin>
-
+<!--
             <plugin>
                 <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
                 <artifactId>launch4j-plugin</artifactId>
                 <version>1.5.0.0</version>
                 <executions>
 
-                    <!-- GUI exe -->
                     <execution>
                         <id>l4j-emitag</id>
                         <phase>package</phase>
@@ -89,7 +111,7 @@
                 </executions>
             </plugin>
 
-
+-->
 
 
         </plugins>

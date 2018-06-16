@@ -5,6 +5,7 @@ import net.spjelkavik.emit.common.EtimingReader;
 import net.spjelkavik.emit.common.Frame;
 import net.spjelkavik.emit.common.SeriousLogger;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -78,7 +79,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         af.setEtimingReader(et);
 
         BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(ConfigFrameMiG.JDBC_DRIVER);
+        ds.setDriverClassName(config.getJdbcDriver());
         ds.setUrl(config.getJdbcUrl());
         JdbcTemplate jdbcTemplate = new JdbcTemplate(ds);
         et.setJdbcTemplate(jdbcTemplate);
@@ -133,6 +134,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
     private JLabel clubNameLabel;
     private JTextField startNumberField;
     private JTextField brikkeField;
+    private JLabel statusLabel;
 
     private JLabel brikkeNrLestLabel;
     private JLabel brikkeNrLabel1;
@@ -166,7 +168,6 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
 
     private JLabel runnerTimeLabel;
 
-    private JLabel statusLabel;
     private JLabel comStatusLabel;
 
     private JLabel prevLabel;
@@ -196,6 +197,8 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         } else {
             ok = etimingReader.updateResults(getStartNumber(), getBadgeNumber());
         }
+        statusLabel.setText(etimingReader.getLastStatus());
+
         if (ok) {
 
             currentState.ecard = getBadgeNumber();
@@ -215,7 +218,9 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
             frame = null;
 
         } else {
-            statusLabel.setText("Not found");
+            if (StringUtils.isEmpty(statusLabel.getText())) {
+                statusLabel.setText("Not found");
+            }
         }
     }
 
@@ -402,6 +407,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
         JPanel prevPanel = new JPanel(new MigLayout());
         prevPanel.setBorder(BorderFactory.createTitledBorder("Log"));
 
+        prevPanel.add(statusLabel, "wrap");
         prevPanel.add(new JLabel("Previous:"));
         prevPanel.add(prevLabel, "wrap");
         prevPanel.add(sp, "span, grow, wrap");

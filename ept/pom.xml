@@ -90,12 +90,5 @@
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.spjelkavik.emit</groupId>
-            <artifactId>serial-250-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
 </project>

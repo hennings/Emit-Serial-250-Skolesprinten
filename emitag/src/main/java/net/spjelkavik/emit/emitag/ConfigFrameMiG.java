@@ -4,7 +4,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,7 +25,6 @@ import java.util.prefs.Preferences;
  */
 public class ConfigFrameMiG extends JFrame {
 
-    public final static String JDBC_DRIVER = "sun.jdbc.odbc.JdbcOdbcDriver";
     public final static String sunJdbcDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
     public final static String sqlServerJdbcDriver = "com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource";
 
@@ -440,8 +439,8 @@ public class ConfigFrameMiG extends JFrame {
                 BasicDataSource ds = new BasicDataSource();
                 ds.setDriverClassName(sunJdbcDriver);
                 ds.setUrl(url);
-                SimpleJdbcTemplate sjt = new SimpleJdbcTemplate(ds);
-                c = sjt.queryForInt("select count(*) from arr");
+                JdbcTemplate sjt = new JdbcTemplate(ds);
+                c = sjt.queryForObject("select count(*) from arr", Integer.class);
                 if (c > 0) {
                     String name = findName(sjt);
                     configStatus.setText("OK! " + name);
@@ -477,8 +476,8 @@ public class ConfigFrameMiG extends JFrame {
                 BasicDataSource ds = new BasicDataSource();
                 ds.setDriverClassName(sqlServerJdbcDriver);
                 ds.setUrl(url);
-                SimpleJdbcTemplate sjt = new SimpleJdbcTemplate(ds);
-                c = sjt.queryForInt("select count(*) from arr");
+                JdbcTemplate sjt = new JdbcTemplate(ds);
+                c = sjt.queryForObject("select count(*) from arr", Integer.class);
                 if (c > 0 ) {
                     String name = findName(sjt);
                     configStatus.setText("OK! " + name );
@@ -519,7 +518,7 @@ public class ConfigFrameMiG extends JFrame {
         return url;
     }
 
-    private String findName(SimpleJdbcTemplate sjt) {
+    private String findName(JdbcTemplate sjt) {
         return sjt.queryForObject("select name from arr", String.class);
     }
 
@@ -566,7 +565,7 @@ public class ConfigFrameMiG extends JFrame {
             ds.setDriverClassName(sqlServerJdbcDriver);
             ds.setUrl(addDefaultUserAndPasswordOnSQLServer(dsn));
             log.info("fetch emit sql db, try to connect to " + dsn);
-            SimpleJdbcTemplate sjt = new SimpleJdbcTemplate(ds);
+            JdbcTemplate sjt = new JdbcTemplate(ds);
             List<Map<String, Object>> res = sjt.queryForList("SELECT name, database_id, create_date FROM sys.databases");
             log.info("got results " + res);
             List<String> result = new ArrayList<>();
