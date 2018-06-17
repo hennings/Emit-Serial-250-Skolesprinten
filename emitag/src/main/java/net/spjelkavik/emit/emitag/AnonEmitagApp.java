@@ -58,7 +58,7 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
 
         //BeanFactory f = new ClassPathXmlApplicationContext(new String[]{"applicationContext.xml"});
 
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+//        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         UIManager.put("swing.boldMetal", Boolean.FALSE);
 
 
