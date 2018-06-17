@@ -17,6 +17,9 @@ public class EmitagMessageParserTest {
         assertEquals(3350998, m.getEmitagNumber());
 
         parser.parseMessage(m, "Y878100246");
+        assertEquals("878100246", m.getSerial());
+
+        parser.parseMessage(m, "S878100246");
         assertEquals(878100246, m.getSerialNumber());
 
     }
