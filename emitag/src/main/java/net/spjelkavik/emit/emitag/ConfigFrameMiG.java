@@ -110,7 +110,6 @@ public class ConfigFrameMiG extends JFrame {
         emitSqlDb = new JComboBox();
         emitSqlDb.addItem("********");
         all.add(emitSql, "growx 200");
-        all.add(emitSqlDb);
         JButton emitSqlSeek = new JButton();
         emitSqlSeek.setText("Connect");
         emitSqlSeek.addActionListener(new ActionListener() {
@@ -119,7 +118,9 @@ public class ConfigFrameMiG extends JFrame {
                 new FetchEmitSqlDbEventsWorker(emitSql.getText(), emitSqlDb).execute();
             }
         });
-        all.add(emitSqlSeek, "growx 200, wrap");
+
+        all.add(emitSqlSeek, "growx 200");
+        all.add(emitSqlDb, "growx 200, wrap");
 
 
         // ACcess
@@ -164,7 +165,12 @@ public class ConfigFrameMiG extends JFrame {
                 listOfComPorts.setSelectedIndex(i);
             }
         }
-        all.add(new JLabel("COM-port"));
+        JLabel comportLabel = new JLabel("COM-port");
+        if (listOfComPorts.getItemCount()==0) {
+            comportLabel.setText("COM-port (MISSING)");
+            comportLabel.setForeground(Color.red);
+        }
+        all.add(comportLabel);
         all.add(listOfComPorts, "wrap");
 
 
@@ -308,9 +314,12 @@ public class ConfigFrameMiG extends JFrame {
 
     private static class RegistryPreferences {
         final Preferences preferences;
+        final static Logger log = Logger.getLogger(RegistryPreferences.class);
 
         RegistryPreferences() {
             preferences = Preferences.userNodeForPackage(ConfigFrameMiG.class);
+            log.info("Registry preferences: " + preferences);
+            preferences.put("testwrite", "42");
         }
 
         public void setSysFile(String sysFile) {

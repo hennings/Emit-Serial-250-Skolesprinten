@@ -65,11 +65,11 @@
                     <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
                 </configuration>
             </plugin>
-<!--
+
             <plugin>
-                <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
-                <artifactId>launch4j-plugin</artifactId>
-                <version>1.5.0.0</version>
+	        <groupId>com.akathist.maven.plugins.launch4j</groupId>
+  		<artifactId>launch4j-maven-plugin</artifactId>
+		<version>1.7.22</version>
                 <executions>
 
                     <execution>
@@ -89,7 +89,7 @@
                             <icon>src/main/resources/emit.ico</icon>
                             <jre>
                                 <minVersion>1.6.0</minVersion>
-                                <maxVersion>1.7.9</maxVersion>
+                                <maxVersion>1.7.999</maxVersion>
                                 <initialHeapSize>128</initialHeapSize>
                                 <maxHeapSize>1024</maxHeapSize>
                             </jre>
@@ -111,7 +111,7 @@
                 </executions>
             </plugin>
 
--->
+
 
 
         </plugins>

@@ -299,7 +299,10 @@ public class AnonEmitagApp extends JFrame implements ActionListener, EmitagMessa
 
         String hostname = System.getenv().get("COMPUTERNAME");
         if (hostname==null) { hostname="default";   }
-        File logfile = new File(emitagConfig.getDbDir() + "/log-brikkenr-"+hostname+".txt");
+
+        String prefix = emitagConfig.getDbDir();
+
+        File logfile = new File(prefix + "log-brikkenr-"+hostname+".txt");
         File logfile2 = new File("log-brikkenr-2-"+hostname+".txt");
 
         this.seriousLogger = new SeriousLogger(hostname+";"+config.getTitle(), logfile, logfile2, "http://project.spjelkavik.net/logger/");
