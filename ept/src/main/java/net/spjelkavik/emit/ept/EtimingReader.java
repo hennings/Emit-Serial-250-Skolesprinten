@@ -55,7 +55,7 @@ public class EtimingReader {
 
     public boolean renameOldEcard(int ecard) {
         try {
-            int startno = jdbcTemplate.queryForInt("select max(startno) as startnr from name where ecard=?",ecard);
+            Integer startno = jdbcTemplate.queryForObject("select max(startno) as startnr from name where ecard=?",Integer.class, ecard);
             if (startno>0) {
                 log.warn("Existing runner " + startno + " had ecard " + ecard + " => changed the ecard");
                 int newEcard = startno + 10000000;
@@ -73,7 +73,7 @@ public class EtimingReader {
 
     public boolean renameOldEcard2(int ecard) {
         try {
-            int startno = jdbcTemplate.queryForInt("select max(startno) as startnr from name where ecard2=?",ecard);
+            Integer startno = jdbcTemplate.queryForObject("select max(startno) as startnr from name where ecard2=?",Integer.class, ecard);
             if (startno>0) {
                 log.warn("Existing runner " + startno + " had ecard2 " + ecard + " => changed the ecard");
                 int newEcard = startno + 10000000;
