@@ -2,93 +2,100 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-        <parent>
-            <groupId>net.spjelkavik</groupId>
-            <artifactId>serial-250-parent</artifactId>
-      <version>1.0</version>
+    <parent>
+        <groupId>net.spjelkavik</groupId>
+        <artifactId>serial-250-parent</artifactId>
+        <version>2.0-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>serial-250-ept</artifactId>
     <groupId>net.spjelkavik.emit</groupId>
     <packaging>jar</packaging>
     <name>Serial 250 Skolesprint (EKT)</name>
-    <version>1.5-SNAPSHOT</version>
 
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shadedArtifactAttached>true
+                    </shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
+                    <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
+                    <transformers>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>net.spjelkavik.emit.ept.AnonEmitTradApp</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </plugin>
 
-<build><plugins>
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-shade-plugin</artifactId>
-    <version>1.4</version>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>shade</goal>
-            </goals>
-        </execution>
-    </executions>
-    <configuration>
-      <shadedArtifactAttached>true</shadedArtifactAttached> <!-- Make the shaded artifact not the main one -->
-      <shadedClassifierName>shaded</shadedClassifierName> <!-- set the suffix to the shaded jar -->
-      <transformers>
-	<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-	  <mainClass>net.spjelkavik.emit.ept.AnonEmitTradApp</mainClass>
-	</transformer>
-      </transformers>
-    </configuration>
-</plugin>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.22</version>
+                <executions>
 
-<plugin>
-  <groupId>com.akathist.maven.plugins.launch4j</groupId>
-  <artifactId>launch4j-maven-plugin</artifactId>
-  <version>1.7.22</version>
-  <executions>
+                    <execution>
+                        <id>l4j-ept</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>target/emitskolesprint-app.exe</outfile>
+                            <jar>target/${project.artifactId}-${project.version}-shaded.jar</jar>
+                            <errTitle>App Err</errTitle>
+                            <classPath>
+                                <mainClass>net.spjelkavik.emit.ept.AnonEmitTradApp</mainClass>
+                            </classPath>
+                            <icon>src/main/resources/emit.ico</icon>
+                            <jre>
+                                <minVersion>1.6.0</minVersion>
+                                <maxVersion>1.7.9</maxVersion>
+                                <initialHeapSize>128</initialHeapSize>
+                                <maxHeapSize>1024</maxHeapSize>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0.0</txtFileVersion>
+                                <fileDescription>Desc</fileDescription>
+                                <copyright>C</copyright>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0.0</txtProductVersion>
+                                <productName>Product</productName>
+                                <internalName>Product</internalName>
+                                <originalFilename>App.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
 
-    <execution>
-      <id>l4j-ept</id>
-      <phase>package</phase>
-      <goals>
-        <goal>launch4j</goal>
-      </goals>
-      <configuration>
-        <headerType>gui</headerType>
-        <outfile>target/emitskolesprint-app.exe</outfile>
-        <jar>target/${project.artifactId}-${project.version}-shaded.jar</jar>
-        <errTitle>App Err</errTitle>
-        <classPath>
-          <mainClass>net.spjelkavik.emit.ept.AnonEmitTradApp</mainClass>
-        </classPath>
-        <icon>src/main/resources/emit.ico</icon>
-        <jre>
-          <minVersion>1.6.0</minVersion>
-          <maxVersion>1.7.9</maxVersion>
-          <initialHeapSize>128</initialHeapSize>
-          <maxHeapSize>1024</maxHeapSize>
-        </jre>
-        <versionInfo>
-          <fileVersion>1.0.0.0</fileVersion>
-          <txtFileVersion>1.0.0.0</txtFileVersion>
-          <fileDescription>Desc</fileDescription>
-          <copyright>C</copyright>
-          <productVersion>1.0.0.0</productVersion>
-          <txtProductVersion>1.0.0.0</txtProductVersion>
-          <productName>Product</productName>
-          <internalName>Product</internalName>
-          <originalFilename>App.exe</originalFilename>
-        </versionInfo>
-      </configuration>
-    </execution>
-
-  </executions>
-</plugin>
-
-
+                </executions>
+            </plugin>
 
 
         </plugins>
     </build>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>net.spjelkavik.emit</groupId>
+            <artifactId>serial-250-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

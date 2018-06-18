@@ -4,24 +4,29 @@
 
     <parent>
         <groupId>net.spjelkavik</groupId>
-        <artifactId>anonrunners-parent</artifactId>
+        <artifactId>serial-250-parent</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>java8-test</artifactId>
+    <artifactId>serial-250-common</artifactId>
     <groupId>net.spjelkavik.emit</groupId>
     <packaging>jar</packaging>
-    <name>Serial250-java8</name>
+    <name>Serial 250 Common</name>
 
 
     <dependencies>
+
         <dependency>
-            <groupId>net.sf.ucanaccess</groupId>
-            <artifactId>ucanaccess</artifactId>
-            <version>4.0.4</version>
+            <groupId>com.microsoft</groupId>
+            <artifactId>sqlserver</artifactId>
+            <version>3.0.1301</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.10.0</version>
+        </dependency>
     </dependencies>
 
 </project>
