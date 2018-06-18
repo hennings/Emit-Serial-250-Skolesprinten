@@ -35,8 +35,8 @@ public final class SeriousLogger {
         this.hostname = hostname;
         this.logfile2 = logfile2;
         this.url = url;
-        log.debug(logfile.getAbsolutePath());
-        log.debug(logfile2.getAbsolutePath());
+        if (logfile!=null) log.debug(logfile.getAbsolutePath());
+        if (logfile2!=null) log.debug(logfile2.getAbsolutePath());
         log.debug("Log to " + url);
     }
 
@@ -47,16 +47,19 @@ public final class SeriousLogger {
 
         post(logMessage);
 
-        try {
-            logfw = new FileWriter(logfile, true);
-            IOUtils.write(logMessage + "\r\n", logfw);
-            logfw.close();
-        } catch (IOException e) {
-            log.error("Could not write log: ", e);
+        if (logfile!=null) {
+            doWrite(logfile, logMessage);
         }
 
+        if (logfile2!=null) {
+            doWrite(logfile2, logMessage);
+        }
+    }
+
+    private void doWrite(File logfile, String logMessage) {
+        FileWriter logfw;
         try {
-            logfw = new FileWriter(logfile2, true);
+            logfw = new FileWriter(logfile, true);
             IOUtils.write(logMessage + "\r\n", logfw);
             logfw.close();
         } catch (IOException e) {

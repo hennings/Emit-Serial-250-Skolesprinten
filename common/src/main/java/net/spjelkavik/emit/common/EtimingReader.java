@@ -153,37 +153,56 @@ public class EtimingReader {
         return false;
     }
 
+    RowMapper rowMapperRunner = new RowMapper() {
+
+        public Object mapRow(ResultSet rs, int rowNum) throws SQLException, DataAccessException {
+            final Map<String, String> result = new HashMap<String, String>();
+            result.put("id", rs.getString("id"));
+            result.put("name", rs.getString("name"));
+            result.put("ename", rs.getString("ename"));
+            result.put("ecard", rs.getString("ecard"));
+            result.put("ecard2", rs.getString("ecard2"));
+            result.put("startno", rs.getString("startno"));
+            result.put("seed", rs.getString("seed"));
+            result.put("team_name", rs.getString("team_name"));
+            return result;
+        }
+
+    };
+
+
+
+
     @SuppressWarnings("unchecked")
     public Map<String,String> getRunner(int startNumber) {
-        RowMapper rse = new RowMapper() {
-
-            public Object mapRow(ResultSet rs, int rowNum) throws SQLException, DataAccessException {
-                final Map<String, String> result = new HashMap<String, String>();
-                result.put("id", rs.getString("id"));
-                result.put("name", rs.getString("name"));
-                result.put("ename", rs.getString("ename"));
-                result.put("ecard", rs.getString("ecard"));
-                result.put("ecard2", rs.getString("ecard2"));
-                result.put("startno", rs.getString("startno"));
-                result.put("seed", rs.getString("seed"));
-                result.put("team_name", rs.getString("team_name"));
-                return result;
-            }
-
-        };
-
 
         List<Map<String,String>> r = jdbcTemplate.query(
                 "select n.id,n.ename, n.name,n.times, n.seed, n.place, n.class, n.cource, n.starttime, "+
                         " n.status, n.statusmsg, n.startno, n.ecard2, "+
                         " n.intime, n.ecard, n.changed, n.team, t.name as team_name from Name n, Team t "+
                         " where n.team=t.code and n.startno=? "
-                ,new Object[] { new Integer(startNumber)}, rse);
+                ,new Object[] { new Integer(startNumber)}, rowMapperRunner);
 
         log.info("template returned: " + r);
         if (r.size()>0) return r.get(0);
         return null;
     }
+
+    @SuppressWarnings("unchecked")
+    public Map<String,String> getRunnerByEcard(int ecard) {
+
+        List<Map<String,String>> r = jdbcTemplate.query(
+                "select n.id,n.ename, n.name,n.times, n.seed, n.place, n.class, n.cource, n.starttime, "+
+                        " n.status, n.statusmsg, n.startno, n.ecard2, "+
+                        " n.intime, n.ecard, n.changed, n.team, t.name as team_name from Name n, Team t "+
+                        " where n.team=t.code and n.ecard=? or n.ecard2=? "
+                ,new Object[] { new Integer(ecard), new Integer(ecard) }, rowMapperRunner);
+
+        log.info("template returned: " + r);
+        if (r.size()>0) return r.get(0);
+        return null;
+    }
+
 
     public boolean updateResults(int startNumber, Frame frame) {
         throw new IllegalStateException("skolemesterskapet");

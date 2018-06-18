@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.Preferences;
 
+
+import static net.spjelkavik.emit.emitag.CommonConstants.fontBaseSize;
+import static net.spjelkavik.emit.emitag.CommonConstants.fontName;
+
 /**
  * User: hennings
  * Date: 22.08.2014
@@ -37,9 +41,9 @@ public class ConfigFrameMiG extends JFrame {
     JTextField dbFileTxt = new JTextField();
     JTextField sysFileTxt = new JTextField();
     JButton butOk = new JButton("Start");
+    //JButton butVerify = new JButton("Verify tag only");
     private JTextField emitSql = new JTextField();
     private JComboBox emitSqlDb = new JComboBox();
-
 
 
     private JTextField title = new JTextField();
@@ -66,7 +70,7 @@ public class ConfigFrameMiG extends JFrame {
         final JFrame thisFrame = this;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel all = new JPanel(new MigLayout());
+        JPanel all = new JPanel(new MigLayout("gap 5px 5px"));
 
         all.setBorder(new EmptyBorder(10, 10, 10, 10));
         this.add(all);
@@ -81,8 +85,8 @@ public class ConfigFrameMiG extends JFrame {
         dbFileTxt.setText(dbFileName);
         sysFileTxt.setText(sysFileName);
 
-        JLabel titleLabel = new JLabel("Anonyme Emitags");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        JLabel titleLabel = new JLabel("Anonyme Emitags " + (Boolean.getBoolean("VERIFY") ? " - Verify" : ""));
+        titleLabel.setFont(new Font(fontName, Font.BOLD, fontBaseSize * 2));
 
         all.add(titleLabel, "span,wrap");
 
@@ -98,13 +102,12 @@ public class ConfigFrameMiG extends JFrame {
         });
 
 
-
         // SQL Server
 
         all.add(new JLabel("Emit SQL Server"));
         emitSql.setText(prefs.getEmitSql());
-        emitSql.setPreferredSize(new Dimension(250,20));
-        if (StringUtils.stripToNull(emitSql.getText())==null) {
+        emitSql.setPreferredSize(new Dimension(250, 20));
+        if (StringUtils.stripToNull(emitSql.getText()) == null) {
             emitSql.setText("jdbc:sqlserver://falketind:1433");
         }
         emitSqlDb = new JComboBox();
@@ -149,8 +152,8 @@ public class ConfigFrameMiG extends JFrame {
         });
 
         String winMode = "Windows 32/64 bits? (" + System.getProperty("os.arch") + ")";
-        String[] buttonsMode = new String[] {"32","64"};
-        addButtonLine(all, winMode, buttonsMode, mode64, prefs, new DoIt(){
+        String[] buttonsMode = new String[]{"32", "64"};
+        addButtonLine(all, winMode, buttonsMode, mode64, prefs, new DoIt() {
             @Override
             public void doit(String value) {
                 prefs.setMode64(value);
@@ -166,7 +169,7 @@ public class ConfigFrameMiG extends JFrame {
             }
         }
         JLabel comportLabel = new JLabel("COM-port");
-        if (listOfComPorts.getItemCount()==0) {
+        if (listOfComPorts.getItemCount() == 0) {
             comportLabel.setText("COM-port (MISSING)");
             comportLabel.setForeground(Color.red);
         }
@@ -192,20 +195,24 @@ public class ConfigFrameMiG extends JFrame {
         butOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateConfig(prefs);
-                calculateJdbcUrl(prefs, furl);
-                //verifyDataSource(prefs, furl);
-
-                emitagConfig = new EmitagConfig(globalTitle, dbFileTxt.getText(), sysFileTxt.getText(),
-                        (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc,
-                        Boolean.getBoolean("RELAY"))
-                ;
+                setupConfiguration(prefs, furl);
 
                 callback.actionPerformed(null);
                 setVisible(false);
             }
         });
 
+        /*
+        butVerify.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setupConfiguration(prefs, furl);
+
+                callback.actionPerformed(null);
+                setVisible(false);
+            }
+        });
+        */
 
         JButton butTest = new JButton("Test config");
         all.add(butTest);
@@ -216,7 +223,7 @@ public class ConfigFrameMiG extends JFrame {
                 updateConfig(prefs);
                 verifyDataSource(prefs, furl);
                 emitagConfig = new EmitagConfig(globalTitle, dbFileTxt.getText(), sysFileTxt.getText(),
-                        (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc, Boolean.getBoolean("RELAY"));
+                        (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc, Boolean.getBoolean("RELAY"), Boolean.getBoolean("VERIFY"));
 
             }
         });
@@ -224,12 +231,13 @@ public class ConfigFrameMiG extends JFrame {
         configStatus.setForeground(Color.RED);
         all.add(configStatus, "span");
         all.add(new JLabel(""));
-        all.add(new JLabel(""),"wrap");
+        all.add(new JLabel(""), "wrap");
 
         all.add(butTest);
 
 
         all.add(butOk);
+        //all.add(butVerify);
         all.add(butExit, "wrap");
 
         butExit.addActionListener(new ActionListener() {
@@ -246,6 +254,16 @@ public class ConfigFrameMiG extends JFrame {
 
     }
 
+    private void setupConfiguration(RegistryPreferences prefs, JTextField furl) {
+        updateConfig(prefs);
+        calculateJdbcUrl(prefs, furl);
+        //verifyDataSource(prefs, furl);
+
+        emitagConfig = new EmitagConfig(globalTitle, dbFileTxt.getText(), sysFileTxt.getText(),
+                (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc,
+                Boolean.getBoolean("RELAY"), Boolean.getBoolean("VERIFY"))
+        ;
+    }
 
 
     void addButtonLine(JPanel all, String lineText, String[] buttons, String currentValue,
@@ -367,6 +385,7 @@ public class ConfigFrameMiG extends JFrame {
         public String getDbType() {
             return preferences.get("/dbType", "Emit");
         }
+
         public void setDbType(String value) {
             preferences.put("/dbType", value);
         }
@@ -378,8 +397,6 @@ public class ConfigFrameMiG extends JFrame {
         public void setEmitSql(String s) {
             preferences.put("/emitSql", s);
         }
-
-
 
 
     }
@@ -421,6 +438,7 @@ public class ConfigFrameMiG extends JFrame {
         }
 
     }
+
     private String addDefaultUserAndPasswordOnSQLServer(final String inurl) {
         String url = inurl;
         if (!url.contains("user")) {
@@ -466,7 +484,7 @@ public class ConfigFrameMiG extends JFrame {
             } catch (Exception ec) {
                 log.error("Couldn't run: " + ec);
             }
-        } else  if ("EmitSQL".equals(prefs.getDbType())) {
+        } else if ("EmitSQL".equals(prefs.getDbType())) {
 
             //url="jdbc:sqlserver://steffensberget:51757;databaseName=VMTest2016Test1_2016;user=emit;password=time";
             String dbName = (String) emitSqlDb.getSelectedItem();
@@ -487,9 +505,9 @@ public class ConfigFrameMiG extends JFrame {
                 ds.setUrl(url);
                 JdbcTemplate sjt = new JdbcTemplate(ds);
                 c = sjt.queryForObject("select count(*) from arr", Integer.class);
-                if (c > 0 ) {
+                if (c > 0) {
                     String name = findName(sjt);
-                    configStatus.setText("OK! " + name );
+                    configStatus.setText("OK! " + name);
                     if (title.getText().length() == 0) {
                         title.setText(name);
                     }
@@ -510,7 +528,6 @@ public class ConfigFrameMiG extends JFrame {
         }
 
 
-
     }
 
     private String calculateJdbcUrl(RegistryPreferences prefs, JTextField furl) {
@@ -522,7 +539,7 @@ public class ConfigFrameMiG extends JFrame {
             driver = "Microsoft Access Driver (*.mdb)";
         }
         String url = String.format("jdbc:odbc:Driver={%s};dbq=%s;SystemDB=%s;UID=admin",
-                driver, prefs.getDbFile(), prefs.getSysFile()).replaceAll("\\\\","/");
+                driver, prefs.getDbFile(), prefs.getSysFile()).replaceAll("\\\\", "/");
         furl.setText(url);
         return url;
     }
@@ -530,7 +547,6 @@ public class ConfigFrameMiG extends JFrame {
     private String findName(JdbcTemplate sjt) {
         return sjt.queryForObject("select name from arr", String.class);
     }
-
 
 
     private class ArrInfo {
@@ -544,11 +560,11 @@ public class ConfigFrameMiG extends JFrame {
     }
 
 
-
     private class FetchEmitSqlDbEventsWorker extends SwingWorker<List<String>, Void> {
 
-        String dsn ;
+        String dsn;
         JComboBox dblist;
+
         public FetchEmitSqlDbEventsWorker(String emitSql, JComboBox emitSqlDb) {
             dsn = emitSql;
             dblist = emitSqlDb;
@@ -564,10 +580,11 @@ public class ConfigFrameMiG extends JFrame {
                 log.warn("couldn't connect to SQL Server", e);
             }
             emitSqlDb.removeAllItems();
-            for (String s: result) {
+            for (String s : result) {
                 emitSqlDb.addItem(s);
             }
         }
+
         @Override
         protected List<String> doInBackground() throws Exception {
             BasicDataSource ds = new BasicDataSource();
@@ -578,7 +595,7 @@ public class ConfigFrameMiG extends JFrame {
             List<Map<String, Object>> res = sjt.queryForList("SELECT name, database_id, create_date FROM sys.databases");
             log.info("got results " + res);
             List<String> result = new ArrayList<>();
-            for (Map<String,Object> e : res) {
+            for (Map<String, Object> e : res) {
                 result.add((String) e.get("name"));
             }
             return result;
@@ -586,6 +603,5 @@ public class ConfigFrameMiG extends JFrame {
 
 
     }
-
 
 }

@@ -46,7 +46,7 @@ public class ECBMessage {
     }
 
     public void setMessages(String messages) {
-        String[] values = info.split("-");
+        String[] values = messages.split("-");
         if (values.length==2) {
             from = NumberUtils.toInt(values[0], 0);
             to = NumberUtils.toInt(values[1],0 ) ;
