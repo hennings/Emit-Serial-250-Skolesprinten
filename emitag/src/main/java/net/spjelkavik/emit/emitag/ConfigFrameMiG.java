@@ -30,6 +30,7 @@ import static net.spjelkavik.emit.emitag.CommonConstants.fontName;
 public class ConfigFrameMiG extends JFrame {
 
     public final static String sunJdbcDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
+    public final static String mysqlJdbcDriver = "com.mysql.jdbc.jdbc2.optional.MysqlDataSource";
     public final static String sqlServerJdbcDriver = "com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource";
 
     private String globalJdbc;
@@ -44,6 +45,8 @@ public class ConfigFrameMiG extends JFrame {
     //JButton butVerify = new JButton("Verify tag only");
     private JTextField emitSql = new JTextField();
     private JComboBox emitSqlDb = new JComboBox();
+
+    private JTextField mySQL = new JTextField();
 
 
     private JTextField title = new JTextField();
@@ -92,7 +95,7 @@ public class ConfigFrameMiG extends JFrame {
 
 
         String[] dbTypes;
-        dbTypes = new String[]{"Emit", "EmitSQL"};
+        dbTypes = new String[]{"Emit", "EmitSQL", "Mysql"};
 
         addButtonLine(all, "Database Type", dbTypes, prefs.getDbType(), prefs, new DoIt() {
             @Override
@@ -101,6 +104,12 @@ public class ConfigFrameMiG extends JFrame {
             }
         });
 
+
+        // Mysql
+        all.add(new JLabel("MySQL"));
+        mySQL.setText(prefs.getMySql());
+        mySQL.setPreferredSize(new Dimension(400, 20));
+        all.add(mySQL, "growx 400, wrap");
 
         // SQL Server
 
@@ -327,6 +336,7 @@ public class ConfigFrameMiG extends JFrame {
         prefs.setSysFile(sysFileTxt.getText());
         prefs.setComPort((String) listOfComPorts.getSelectedItem());
         prefs.setEmitSql(emitSql.getText());
+        prefs.setMySql(mySQL.getText());
 
     }
 
@@ -396,6 +406,14 @@ public class ConfigFrameMiG extends JFrame {
 
         public void setEmitSql(String s) {
             preferences.put("/emitSql", s);
+        }
+
+        public String getMySql() {
+            return preferences.get("/mySql", "");
+        }
+
+        public void setMySql(String s) {
+            preferences.put("/mySql", s);
         }
 
 
@@ -484,7 +502,37 @@ public class ConfigFrameMiG extends JFrame {
             } catch (Exception ec) {
                 log.error("Couldn't run: " + ec);
             }
-        } else if ("EmitSQL".equals(prefs.getDbType())) {
+        } else   if ("Mysql".equals(prefs.getDbType())) {
+
+            url = mySQL.getText();
+            globalJdbc = mysqlJdbcDriver;
+            globalJdbcUrl = url;
+            int c = 0;
+            configStatus.setText("Not yet successful");
+            configStatus.setForeground(Color.RED);
+            try {
+                BasicDataSource ds = new BasicDataSource();
+                ds.setDriverClassName(mysqlJdbcDriver);
+                ds.setUrl(url);
+                JdbcTemplate sjt = new JdbcTemplate(ds);
+                c = sjt.queryForObject("select count(*) from name", Integer.class);
+                if (c > 0) {
+                    String name = findName(sjt);
+                    configStatus.setText("OK! " + name);
+                    configStatus.setForeground(Color.GREEN);
+                    globalTitle = name;
+
+                } else {
+                    configStatus.setForeground(Color.RED);
+
+                }
+
+
+                butOk.setEnabled(true);
+            } catch (Exception ec) {
+                log.error("Couldn't run: " + ec);
+            }
+        }  else if ("EmitSQL".equals(prefs.getDbType())) {
 
             //url="jdbc:sqlserver://steffensberget:51757;databaseName=VMTest2016Test1_2016;user=emit;password=time";
             String dbName = (String) emitSqlDb.getSelectedItem();
@@ -525,6 +573,8 @@ public class ConfigFrameMiG extends JFrame {
             } catch (Exception ec) {
                 log.error("Couldn't run: " + ec);
             }
+        } else {
+            log.warn(prefs.getDbType()+" does not exist");
         }
 
 

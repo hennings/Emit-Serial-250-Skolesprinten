@@ -42,7 +42,6 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
     private int musicNumber = 0;
     private JLabel runnerNameLabel;
     private JLabel clubNameLabel;
-    private JTextField startNumberField;
     private JTextField brikkeField;
     private JLabel statusLabel;
 
@@ -65,17 +64,6 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
         return NumberUtils.toInt(brikkeField.getText(), -1);
     }
 
-
-    public int getStartNumber() {
-        String text = startNumberField.getText();
-        int nr;
-        if (text.length() == 6) {
-            nr = NumberUtils.toInt(text.substring(0, 5), 0);
-        } else {
-            nr = NumberUtils.toInt(text, 0);
-        }
-        return nr;
-    }
 
 
     private void clearStatus() {
@@ -108,7 +96,7 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
         this.seriousLogger = new SeriousLogger(hostname + ";" + config.getTitle(), logfile, null, "http://project.spjelkavik.net/logger/");
 
 
-        this.setMinimumSize(new Dimension(700, 400));
+        this.setMinimumSize(new Dimension(700, 450));
 
         JPanel all = new JPanel(new MigLayout("gap 10px 10px"));
         this.add(all);
@@ -160,8 +148,11 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
 
 
 
-        startNumberField = new JTextField(16);
-        brikkeField = new JTextField("brikkedefault", 16);
+        brikkeField = new JTextField(16);
+
+        all.add(new JLabel("Ecard:"));
+        all.add(brikkeField, "wrap");
+        brikkeField.addActionListener(this);
 
 
         all.add(new JLabel("Lest brikkenr:"));
@@ -179,7 +170,7 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
         this.pack();
         this.setVisible(true);
 
-        startNumberField.requestFocus();
+        brikkeField.requestFocus();
     }
 
 
@@ -210,13 +201,14 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
                 brikkeNrLabelInDb.setText("In db: ecard " + runner.get("ecard"));
             }
             currentState.name = runner.get("name") + " " + runner.get("ename") + " / " + runner.get("team_name");
+            setRunningTime(StringUtils.trimToEmpty(runner.get("times")) + "  " + StringUtils.trimToEmpty(runner.get("place")));
             seriousLogger.logMessageToDisk("For ecard " + ecard + " found " + stnr +", " + currentState.name);
         } else {
             seriousLogger.logMessageToDisk("For ecard " + ecard + " did not find anything");
             runnerNameLabel.setText("Unknown...");
             clubNameLabel.setText("Unknown...");
             currentState.name = "Unknown...";
-            currentState.stnr = getStartNumber();
+            currentState.stnr = 0;
         }
 
     }
@@ -226,7 +218,7 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
         this.ecbMessage = f;
         if (f.getEmitagNumber() > 0) {
             this.setBadgeNumber(f.getEmitagNumber());
-            this.setRunningTime(f.getTimeSinceZero());
+            //this.setRunningTime(f.getTimeSinceZero());
             log.info("read badge number");
             updateRunner();
         } else {
@@ -255,10 +247,13 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        log.info("action performed" + e);
-    }
 
+    public void actionPerformed(ActionEvent ae) {
+        if (ae.getSource() == brikkeField) {
+            updateRunner();
+            brikkeField.selectAll();
+        }
+    }
 
     final CurrentState currentState = new CurrentState();
 

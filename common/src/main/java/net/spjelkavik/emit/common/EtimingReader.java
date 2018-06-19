@@ -164,6 +164,8 @@ public class EtimingReader {
             result.put("ecard2", rs.getString("ecard2"));
             result.put("startno", rs.getString("startno"));
             result.put("seed", rs.getString("seed"));
+            result.put("times", rs.getString("times"));
+            result.put("place", rs.getString("place"));
             result.put("team_name", rs.getString("team_name"));
             return result;
         }
@@ -178,8 +180,8 @@ public class EtimingReader {
 
         List<Map<String,String>> r = jdbcTemplate.query(
                 "select n.id,n.ename, n.name,n.times, n.seed, n.place, n.class, n.cource, n.starttime, "+
-                        " n.status, n.statusmsg, n.startno, n.ecard2, "+
-                        " n.intime, n.ecard, n.changed, n.team, t.name as team_name from Name n, Team t "+
+                        " n.status, n.statusmsg, n.startno, n.ecard2, n.times, n.place, "+
+                        " n.intime, n.ecard, n.changed, n.team, t.name as team_name from name n, team t "+
                         " where n.team=t.code and n.startno=? "
                 ,new Object[] { new Integer(startNumber)}, rowMapperRunner);
 
@@ -193,8 +195,8 @@ public class EtimingReader {
 
         List<Map<String,String>> r = jdbcTemplate.query(
                 "select n.id,n.ename, n.name,n.times, n.seed, n.place, n.class, n.cource, n.starttime, "+
-                        " n.status, n.statusmsg, n.startno, n.ecard2, "+
-                        " n.intime, n.ecard, n.changed, n.team, t.name as team_name from Name n, Team t "+
+                        " n.status, n.statusmsg, n.startno, n.ecard2, n.times, n.place, "+
+                        " n.intime, n.ecard, n.changed, n.team, t.name as team_name from name n, team t "+
                         " where n.team=t.code and n.ecard=? or n.ecard2=? "
                 ,new Object[] { new Integer(ecard), new Integer(ecard) }, rowMapperRunner);
 
