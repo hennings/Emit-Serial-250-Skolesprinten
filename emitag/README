@@ -1,0 +1,5 @@
+
+Keep win32com.dll in the same directory as the bat-file
+
+Run:
+copy win32com.dll javax.comm.properties c:\program files (x86)\java\jre7\lib\
