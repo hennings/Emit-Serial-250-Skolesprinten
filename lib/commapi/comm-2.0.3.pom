@@ -1,0 +1,21 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.comm</groupId>
+  <artifactId>comm</artifactId>
+  <version>2.0.3</version>
+  <name>Java Communications API</name>
+  <description>
+    The Java Communications API is a Java extension that facilitates developing platform-independent
+    communications applications for technologies such as Smart Cards, embedded systems, and point-of-sale
+    devices, financial services devices, fax, modems, display terminals, and robotic equipment.
+  </description>
+  <url>http://java.sun.com/products/javacomm/</url>
+
+  <distributionManagement>
+    <downloadUrl>http://www.sun.com/download/products.xml?id=43208d3d</downloadUrl>
+  </distributionManagement>
+
+  <dependencies>
+  </dependencies>
+
+</project>

@@ -1,0 +1,2 @@
+mvn install:install-file -Dfile=lib/commapi/comm.jar -DgroupId=javax.comm -DartifactId=comm -Dversion=2.0.3 -Dpackaging=jar -DpomFile=lib/commapi/comm-2.0.3.pom
+
