@@ -131,9 +131,9 @@ public class EtimingReader {
     }
 
 
-    public boolean updateEcardAnonymous(int startNumber, int ecard) {
+    private boolean updateEcardAnonymous(int startNumber, int ecard) {
         int newEcard = startNumber;
-        if (newEcard<200000) newEcard=startNumber + 200000;
+        if (newEcard<20000000) newEcard=startNumber + 20000000;
 
         log.debug("rename old");
         int r0 = jdbcTemplate.update("update name set ecard=? where ecard=?",

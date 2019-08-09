@@ -150,7 +150,9 @@ public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMes
     public int getStartNumber() {
         String text = startNumberField.getText();
         int nr;
-        if (text.length()==6) {
+        if (text.length()==8) {
+            nr = NumberUtils.toInt(text.substring(0,6),0);
+        } else if (text.length()==6) {
             nr = NumberUtils.toInt(text.substring(0,5),0);
         } else {
             nr = NumberUtils.toInt(text,0);
