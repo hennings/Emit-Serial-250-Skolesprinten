@@ -72,12 +72,21 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
     }
 
 
+    Timer timer = new Timer(5000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            cleanRunner();
+        }
+    });
+
+
     public VerifyEmitagFrame(EmitagConfig config) {
 
         //give the window a name
         super("Verify emitag - " + config.getDb() + " - " + config.getEcardField());
 
 
+        this.timer.setRepeats(false);
         this.emitagConfig = config;
         this.ecardField = config.getEcardField();
 
@@ -173,9 +182,22 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
         brikkeField.requestFocus();
     }
 
+    public void cleanRunner() {
+        runnerNameLabel.setText("...");
+        clubNameLabel.setText("...");
+        currentState.name = "...";
+        currentState.stnr = 0;
+        brikkeNrLabelInDb.setText("");
+        brikkeNrLabel1.setText("");
+        brikkeNrLestLabel.setText("");
+        brikkeField.setText("");
+    }
+
 
     public void updateRunner() {
         clearStatus();
+
+        timer.stop();
 
         int ecard = getBadgeNumber();
         Map<String, String> runner = etimingReader.getRunnerByEcard(ecard);
@@ -210,6 +232,7 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
             currentState.name = "Unknown...";
             currentState.stnr = 0;
         }
+        timer.restart();
 
     }
 

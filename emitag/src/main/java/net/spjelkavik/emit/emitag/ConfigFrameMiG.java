@@ -42,7 +42,7 @@ public class ConfigFrameMiG extends JFrame {
     JTextField dbFileTxt = new JTextField();
     JTextField sysFileTxt = new JTextField();
     JButton butOk = new JButton("Start");
-    //JButton butVerify = new JButton("Verify tag only");
+    JButton butVerify = new JButton("Verify tag only");
     private JTextField emitSql = new JTextField();
     private JComboBox emitSqlDb = new JComboBox();
 
