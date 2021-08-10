@@ -3,7 +3,7 @@
   <parent>
     <artifactId>serial-250-parent</artifactId>
     <groupId>net.spjelkavik</groupId>
-    <version>2.0-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.spjelkavik.emit</groupId>
