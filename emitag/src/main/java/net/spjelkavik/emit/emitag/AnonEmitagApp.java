@@ -1,24 +1,15 @@
 package net.spjelkavik.emit.emitag;
 
-import net.miginfocom.swing.MigLayout;
+import net.spjelkavik.emit.common.ComPort;
 import net.spjelkavik.emit.common.EtimingReader;
-import net.spjelkavik.emit.common.Frame;
-import net.spjelkavik.emit.common.SeriousLogger;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.ActionMapUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.util.*;
 import java.util.List;
 
 import static net.spjelkavik.emit.emitag.CommonConstants.fontBaseSize;
@@ -74,9 +65,9 @@ public class AnonEmitagApp  {
         if (args.length > 0) {
             String com = args[0];
             System.out.println("Using port " + com);
-            config = new EmitagConfig("static event", null,null,com,"ecard1", "jdbc:odbc:etime-java", ConfigFrameMiG.sunJdbcDriver, true, Boolean.getBoolean("VERIFY"));
+            config = new EmitagConfig("static event", null,null,com,"ecard1", "jdbc:odbc:etime-java", ConfigFrameMiG.sunJdbcDriver, true, Boolean.getBoolean("VERIFY"), EmitagConfig.CardType.EMITAG);
         } else {
-            config = new AskForConfig().askForConfig(EmitagReader.findSerialPorts());
+            config = new AskForConfig().askForConfig(ComPort.findSerialPorts());
         }
 
         log.info("Starting with config: " + config);
@@ -88,19 +79,28 @@ public class AnonEmitagApp  {
         et.setJdbcTemplate(jdbcTemplate);
 
         if (config.getMode().equals(EmitagConfig.Mode.VERIFY)) {
-            VerifyEmitagFrame af = new VerifyEmitagFrame(config);
+            VerifyEmitFrame af = new VerifyEmitFrame(config);
             af.setEtimingReader(et);
-            EmitagReader.findPort(config.getComPort());
-            EmitagReader reader = new EmitagReader(af);
-            af.setComStatus("Port: " + reader.getPortName());
+            ComPort.findPort(config.getComPort());
+            if (config.getCardType().equals(EmitagConfig.CardType.EMITAG)) {
+                EmitagReader reader = new EmitagReader(af);
+            } else {
+                EptReader reader250 = new EptReader(af);
+            }
+            af.setComStatus("Port: " + ComPort.portId.getName());
 
         } else {
-            AnonEmitagFrame af = new AnonEmitagFrame(config);
+            AnonEmitFrame af = new AnonEmitFrame(config);
             af.setEtimingReader(et);
             if (!"NOCOM".equals(config.getComPort())) {
-                EmitagReader.findPort(config.getComPort());
-                EmitagReader reader = new EmitagReader(af);
-                af.setComStatus("Port: " + reader.getPortName());
+                ComPort.findPort(config.getComPort());
+
+                if (config.getCardType().equals(EmitagConfig.CardType.EMITAG)) {
+                    EmitagReader reader = new EmitagReader(af);
+                } else {
+                    EptReader reader250 = new EptReader(af);
+                }
+                af.setComStatus("Port: " + ComPort.portId.getName());
                 //reader.setCallback(af);
             } else {
                 log.info("Skipping COM-port.");

@@ -1,5 +1,8 @@
 package net.spjelkavik.emit.emitag;
 
+import net.spjelkavik.emit.common.CardNumberReader;
+import net.spjelkavik.emit.common.ComPort;
+
 import javax.comm.*;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -26,9 +29,10 @@ public class ReadEmitagCommandLine {
         if (args.length > 0) {
             defaultPort = args[0];
         }
-        EmitagReader.findPort(defaultPort);
-        EmitagReader re = new EmitagReader(new EmitagMessageListener() {
-            public void handleECBMessage(ECBMessage m) {
+        ComPort.findPort(defaultPort);
+        EmitagReader re = new EmitagReader(new EmitMessageListener() {
+            @Override
+            public void handleCardMessage(CardNumberReader m) {
                 System.out.println("Got message: " + m);
             }
         });

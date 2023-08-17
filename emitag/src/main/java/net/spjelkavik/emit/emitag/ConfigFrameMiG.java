@@ -83,12 +83,13 @@ public class ConfigFrameMiG extends JFrame {
         String sysFileName = prefs.getSysFile();
         String comPort = prefs.getComPort();
         String mode64 = prefs.getMode64();
+        String cardType = prefs.getCardType();
         ecardField = prefs.getEcardField();
 
         dbFileTxt.setText(dbFileName);
         sysFileTxt.setText(sysFileName);
 
-        JLabel titleLabel = new JLabel("Anonyme Emitags " + (Boolean.getBoolean("VERIFY") ? " - Verify" : ""));
+        JLabel titleLabel = new JLabel("Anonyme Emitags v2022 " + (Boolean.getBoolean("VERIFY") ? " - Verify" : ""));
         titleLabel.setFont(new Font(fontName, Font.BOLD, fontBaseSize * 2));
 
         all.add(titleLabel, "span,wrap");
@@ -169,6 +170,15 @@ public class ConfigFrameMiG extends JFrame {
             }
         });
 
+        String cardTypeTxt = "Card type? ";
+        String[] cardTypeMode = new String[]{"EmitTag", "EPT"};
+        addButtonLine(all, cardTypeTxt, cardTypeMode, cardType, prefs, new DoIt() {
+            @Override
+            public void doit(String value) {
+                prefs.setCardType(value);
+            }
+        });
+
 
         String[] comPorts = serialPorts.toArray(new String[0]);
         listOfComPorts = new JComboBox(comPorts);
@@ -232,7 +242,11 @@ public class ConfigFrameMiG extends JFrame {
                 updateConfig(prefs);
                 verifyDataSource(prefs, furl);
                 emitagConfig = new EmitagConfig(globalTitle, dbFileTxt.getText(), sysFileTxt.getText(),
-                        (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc, Boolean.getBoolean("RELAY"), Boolean.getBoolean("VERIFY"));
+                        (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc, Boolean.getBoolean("RELAY"), Boolean.getBoolean("VERIFY")
+                        ,
+                        "EPT".equals(prefs.getCardType()) ?
+                                EmitagConfig.CardType.EPT : EmitagConfig.CardType.EMITAG
+                );
 
             }
         });
@@ -270,7 +284,10 @@ public class ConfigFrameMiG extends JFrame {
 
         emitagConfig = new EmitagConfig(globalTitle, dbFileTxt.getText(), sysFileTxt.getText(),
                 (String) listOfComPorts.getSelectedItem(), ecardField, globalJdbcUrl, globalJdbc,
-                Boolean.getBoolean("RELAY"), Boolean.getBoolean("VERIFY"))
+                Boolean.getBoolean("RELAY"), Boolean.getBoolean("VERIFY"),
+                "EPT".equals(prefs.getCardType()) ?
+                        EmitagConfig.CardType.EPT : EmitagConfig.CardType.EMITAG
+                )
         ;
     }
 
@@ -369,6 +386,15 @@ public class ConfigFrameMiG extends JFrame {
         public void setMode64(String m) {
             preferences.put("/mode64", m);
         }
+
+        public void setCardType(String m) {
+            preferences.put("/cardType", m);
+        }
+
+        public String getCardType() {
+            return preferences.get("/cardType", "EmitTag");
+        }
+
 
         public String getMode64() {
             return preferences.get("/mode64", "64");

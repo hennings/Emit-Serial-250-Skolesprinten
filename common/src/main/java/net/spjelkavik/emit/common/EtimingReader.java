@@ -83,7 +83,7 @@ public class EtimingReader {
             Integer startno = res.get(0);
             if (startno!=null) {
                 log.warn("Existing runner " + startno + " had ecard " + ecard + " => changed the ecard");
-                int newEcard = startno + 10000000;
+                int newEcard = startno + 30000000;
                 jdbcTemplate.update("update name set ecard=? where ecard=?",
                         new Object[] {newEcard, ecard} );
                 int r1 = jdbcTemplate.update("update ecard set ecardno=? where ecardno=?",

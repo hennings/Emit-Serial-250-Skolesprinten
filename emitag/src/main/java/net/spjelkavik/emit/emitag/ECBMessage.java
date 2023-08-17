@@ -1,5 +1,6 @@
 package net.spjelkavik.emit.emitag;
 
+import net.spjelkavik.emit.common.CardNumberReader;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * Time: 19:49
  * To change this template use File | Settings | File Templates.
  */
-public class ECBMessage {
+public class ECBMessage implements CardNumberReader {
     private String info;
     private int from ;
     private int to;
@@ -110,6 +111,11 @@ public class ECBMessage {
 
     public int getEmitagNumber() {
         return emitagNumber;
+    }
+
+    @Override
+    public int getCardNumber() {
+        return getEmitagNumber();
     }
 
     public int getMessageNr() {

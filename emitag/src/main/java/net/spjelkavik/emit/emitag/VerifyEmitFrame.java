@@ -1,6 +1,7 @@
 package net.spjelkavik.emit.emitag;
 
 import net.miginfocom.swing.MigLayout;
+import net.spjelkavik.emit.common.CardNumberReader;
 import net.spjelkavik.emit.common.EtimingReader;
 import net.spjelkavik.emit.common.Frame;
 import net.spjelkavik.emit.common.SeriousLogger;
@@ -10,19 +11,17 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.ActionMapUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
-public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagMessageListener {
+public class VerifyEmitFrame extends JFrame implements ActionListener, EmitMessageListener {
 
 
-    final static Logger log = Logger.getLogger(VerifyEmitagFrame.class);
+    final static Logger log = Logger.getLogger(VerifyEmitFrame.class);
 
     /**
      *
@@ -32,7 +31,7 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
     private final EmitagConfig emitagConfig;
     private final SeriousLogger seriousLogger;
     private EtimingReader etimingReader;
-    private ECBMessage ecbMessage;
+    private CardNumberReader ecbMessage;
     private String comStatus;
 
     private static final int fontBaseSize = 16;
@@ -80,7 +79,7 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
     });
 
 
-    public VerifyEmitagFrame(EmitagConfig config) {
+    public VerifyEmitFrame(EmitagConfig config) {
 
         //give the window a name
         super("Verify emitag - " + config.getDb() + " - " + config.getEcardField());
@@ -236,11 +235,10 @@ public class VerifyEmitagFrame extends JFrame implements ActionListener, EmitagM
 
     }
 
-    @Override
-    public void handleECBMessage(ECBMessage f) {
+    public void handleCardMessage(CardNumberReader f) {
         this.ecbMessage = f;
-        if (f.getEmitagNumber() > 0) {
-            this.setBadgeNumber(f.getEmitagNumber());
+        if (f.getCardNumber() > 0) {
+            this.setBadgeNumber(f.getCardNumber());
             //this.setRunningTime(f.getTimeSinceZero());
             log.info("read badge number");
             updateRunner();

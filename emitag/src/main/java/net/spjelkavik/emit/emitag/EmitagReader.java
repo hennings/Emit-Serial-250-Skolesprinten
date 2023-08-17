@@ -1,6 +1,7 @@
 package net.spjelkavik.emit.emitag;
 
 import com.google.common.io.Files;
+import net.spjelkavik.emit.common.ComPort;
 import org.apache.log4j.Logger;
 
 import javax.comm.*;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.TooManyListenersException;
 
@@ -17,49 +17,11 @@ public final class EmitagReader implements SerialPortEventListener, Runnable {
 
     final static private Logger log = Logger.getLogger(EmitagReader.class);
 
-    static CommPortIdentifier portId;
-    static Enumeration portList;
     InputStream inputStream;
     SerialPort serialPort;
     Thread		      readThread;
 
 
-    public static List<String> findSerialPorts() {
-        Enumeration portList;
-        portList = CommPortIdentifier.getPortIdentifiers();
-        List<String> ports = new ArrayList<String>();
-        while (portList.hasMoreElements()) {
-            portId = (CommPortIdentifier) portList.nextElement();
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                ports.add(portId.getName());
-            }
-        }
-        return ports;
-    }
-
-    public static boolean findPort(String defaultPort) {
-        portList = CommPortIdentifier.getPortIdentifiers();
-        log.info("Enumerator: " + portList);
-        if (!portList.hasMoreElements()) { log.warn("No COM-port found."); }
-        int n = 0;
-        boolean portFound = false;
-        while (portList.hasMoreElements()) {
-            n++;
-            portId = (CommPortIdentifier) portList.nextElement();
-            log.info("Port: " + portId + " - " + portId.getName());
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                if (portId.getName().equals(defaultPort)) {
-                    portFound  = true;
-                    return portFound;
-                }
-            }
-        }
-        if (!portFound) {
-            System.out.println("port " + defaultPort + " not found.");
-            System.exit(-1);
-        }
-        return portFound;
-    }
 
 
         /**
@@ -69,11 +31,11 @@ public final class EmitagReader implements SerialPortEventListener, Runnable {
          * @see
          * @param af
          */
-    public EmitagReader(final EmitagMessageListener af) {
+    public EmitagReader(final EmitMessageListener af) {
         this.badgeListener = af;
         try {
-            System.out.println("Opening " +portId+", "+ portId.getName());
-            serialPort = (SerialPort) portId.open("SimpleReadApp",32000);
+            System.out.println("Opening " + ComPort.portId+", "+ ComPort.portId.getName());
+            serialPort = (SerialPort) ComPort.portId.open("SimpleReadApp",32000);
         } catch (PortInUseException e) {
             System.err.println("ProblemS: " + e);
         }
@@ -118,14 +80,14 @@ public final class EmitagReader implements SerialPortEventListener, Runnable {
     List<EmitagFrame> frames = new ArrayList<EmitagFrame>();
     EmitagFrame frame = new EmitagFrame();
     EmitagFrame prevFrame = null;
-    private EmitagMessageListener badgeListener;
+    private EmitMessageListener badgeListener;
 
     int prev = -1;
 
     long lastEvent;
 
     public final String getPortName() {
-        return portId.getName();
+        return ComPort.portId.getName();
     }
 
     /**
@@ -218,7 +180,7 @@ public final class EmitagReader implements SerialPortEventListener, Runnable {
         log.info("Complete frame: " + frame.toString());
         try {
             ECBMessage m = parser.parse(frame);
-            badgeListener.handleECBMessage(m);
+            badgeListener.handleCardMessage(m);
         } catch (Exception e) {
             log.info("problems ",e);
         }

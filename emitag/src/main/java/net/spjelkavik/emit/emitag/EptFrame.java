@@ -1,10 +1,11 @@
-package net.spjelkavik.emit.common;
+package net.spjelkavik.emit.emitag;
+
+import net.spjelkavik.emit.common.CardNumberReader;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
-public class Frame implements CardNumberReader {
+public class EptFrame implements CardNumberReader {
 
 	private int[] frameBytes = new int[220];
 	int curByte = 1;

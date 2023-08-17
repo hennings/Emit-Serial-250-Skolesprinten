@@ -1,14 +1,13 @@
 package net.spjelkavik.emit.emitag;
 
 import net.miginfocom.swing.MigLayout;
+import net.spjelkavik.emit.common.CardNumberReader;
 import net.spjelkavik.emit.common.EtimingReader;
 import net.spjelkavik.emit.common.Frame;
 import net.spjelkavik.emit.common.SeriousLogger;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,19 +18,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 
 
 import static net.spjelkavik.emit.emitag.CommonConstants.fontBaseSize;
 import static net.spjelkavik.emit.emitag.CommonConstants.fontName;
 
-public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMessageListener {
+public class AnonEmitFrame extends JFrame implements ActionListener, EmitMessageListener {
 
 
 
-    final static Logger log = Logger.getLogger(AnonEmitagFrame.class);
+    final static Logger log = Logger.getLogger(AnonEmitFrame.class);
 
     /**
      *
@@ -41,7 +38,7 @@ public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMes
     private final EmitagConfig emitagConfig;
     private final SeriousLogger seriousLogger;
     private EtimingReader etimingReader;
-    private ECBMessage ecbMessage;
+    private CardNumberReader ecbMessage;
     private String comStatus;
 
 
@@ -157,6 +154,11 @@ public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMes
         } else {
             nr = NumberUtils.toInt(text,0);
         }
+
+        if (nr>100000) {  // Kids!
+            nr = nr/100;
+        }
+
         return nr;
     }
 
@@ -165,7 +167,11 @@ public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMes
         clearStatus();
 
 
-        Map<String, String> runner = etimingReader.getRunner(getStartNumber());
+        int stnrf = getStartNumber();
+        Map<String, String> runner = etimingReader.getRunner(stnrf);
+        if (runner==null && stnrf>100000) { // To handle kids classes
+            runner = etimingReader.getRunner(stnrf/100);
+        }
         if (runner!=null) {
 //            runnerNameLabel.setText("<html><h1>"+runner.get("startno")+" " + runner.get("name")+" " + runner.get("ename")+"</h1>");
             String stnr = runner.get("startno");
@@ -204,7 +210,7 @@ public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMes
     JTextArea logArea = new JTextArea();
     JScrollPane sp;
 
-    public AnonEmitagFrame(EmitagConfig config) {
+    public AnonEmitFrame(EmitagConfig config) {
 
         //give the window a name
         super("Anonyme emitag - " + config.getDb() + " - " + config.getEcardField());
@@ -356,11 +362,14 @@ public class AnonEmitagFrame extends JFrame implements ActionListener, EmitagMes
         startNumberField.requestFocus();
     }
 
-    @Override
     public void handleECBMessage(ECBMessage f) {
+        handleCardMessage(((CardNumberReader) f));
+    }
+
+    public void handleCardMessage(CardNumberReader f) {
         this.ecbMessage = f;
-        if (f.getEmitagNumber()>0) {
-            this.setBadgeNumber(f.getEmitagNumber());
+        if (f.getCardNumber()>0) {
+            this.setBadgeNumber(f.getCardNumber());
             this.setRunningTime(f.getTimeSinceZero());
             log.info("read badge number");
         } else {

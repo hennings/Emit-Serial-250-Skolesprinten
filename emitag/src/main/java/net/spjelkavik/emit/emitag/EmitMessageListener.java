@@ -1,5 +1,7 @@
 package net.spjelkavik.emit.emitag;
 
+import net.spjelkavik.emit.common.CardNumberReader;
+
 /**
  * Created with IntelliJ IDEA.
  * User: hennings
@@ -7,6 +9,6 @@ package net.spjelkavik.emit.emitag;
  * Time: 12:12
  * To change this template use File | Settings | File Templates.
  */
-public interface EmitagMessageListener {
-    void handleECBMessage(ECBMessage m);
+public interface EmitMessageListener {
+    void handleCardMessage(CardNumberReader m);
 }

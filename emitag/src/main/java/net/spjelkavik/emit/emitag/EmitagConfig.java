@@ -13,15 +13,17 @@ public class EmitagConfig {
     private final boolean isRelay;
     private final Mode mode;
     private final RaceType raceType;
+    private final CardType cardType;
 
     enum RaceType { INDIVIDUAL, RELAY }
     enum Mode { ASSIGN, VERIFY }
+    enum CardType { EMITAG, EPT }
 
     private final Logger LOG = Logger.getLogger(EmitagConfig.class);
     private String dbDir;
 
     public EmitagConfig(String globalTitle, String db, String system, String comPort, String ecardField,
-                        String jdbcUrl, String jdbcDriver, boolean isRelay, boolean verify) {
+                        String jdbcUrl, String jdbcDriver, boolean isRelay, boolean verify, CardType cardType) {
         this.db = db;
         this.system = system;
         this.comPort = comPort;
@@ -32,6 +34,7 @@ public class EmitagConfig {
         this.isRelay = isRelay;
         this.raceType = isRelay ? RaceType.RELAY : RaceType.INDIVIDUAL;
         this.mode = verify ? Mode.VERIFY : Mode.ASSIGN;
+        this.cardType = cardType;
     }
 
     public Mode getMode() {
@@ -78,6 +81,10 @@ public class EmitagConfig {
 
     public String getJdbcDriver() {
         return jdbcDriver;
+    }
+
+    public CardType getCardType() {
+        return cardType;
     }
 
     @Override
